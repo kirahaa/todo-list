@@ -1,12 +1,15 @@
 <template>
   <div>
-    todolist
+    <h2>TodoList</h2>
+    <div>
+      
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'todoList',
+  name: 'TodoList',
   props: {
     msg: String
   }
