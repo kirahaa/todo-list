@@ -3,8 +3,8 @@
     <h2>TodoList</h2>
     <!-- Input -->
     <div class="input-container">
-      <input type="text" placeholder="Enter your task">
-      <button @click="submitTask">SUBMIT</button>
+      <input type="text" v-model="task" placeholder="Enter your task">
+      <button type="submit" @click="submitTask">SUBMIT</button>
     </div>
     <!-- Task -->
     <table>
@@ -14,17 +14,27 @@
             <input type="checkbox">
           </td>
           <td>
-            {{task.name}}
+            <span :class="{'finished': task.status === 'finished'}">
+              {{task.name}}
+            </span>
           </td>
           <td>
-            <span class="fa fa-pen"></span>
+            <span @click="editTast(index)">
+              <i class="fa fa-pen"></i>
+            </span>
           </td>
           <td>
-            <span class="fa fa-trash"></span>
+            <span @click="deleteTask(index)">
+              <i class="fa fa-trash"></i>
+            </span>
           </td>
           <td>
-            <span class="far fa-star"></span>
-            <span class="fas fa-star"></span>
+            <span v-if="tasks[index].status === 'normal'" @click="changeStatus(index)">
+              <i class="far fa-star"></i>
+            </span>
+            <span v-else @click="changeStatus(index)">
+              <i class="fas fa-star"></i>
+            </span>
           </td>
         </tr>
       </tbody>
@@ -36,26 +46,60 @@
 export default {
   name: 'TodoList',
   props: {
-    msg: String
+    msg: String,
   },
   data() {
     return {
+      task: '',
+      editedTask: null,
+      checkStatus: true,
+      availableStatuses: ['normal', 'asap'],
+
       tasks: [
         {
           name: '바나나 먹기',
-          status: 'asap'
+          status: 'normal'
         },
         {
           name: '방청소 하기',
-          status: 'normal'
+          status: 'asap'
         }
       ]
     }
   },
   methods: {
     submitTask() {
-      console.log('hello from submit button');
+      if(this.task.length === 0) alert('할일을 입력해주세요!');
+      if(this.editedTask === null) {
+        this.tasks.push({
+          name: this.task,
+          status: 'normal'
+        })
+      } else {
+        this.tasks[this.editedTask].name = this.task;
+        this.editedTask = null;
+      }
+
+      this.task = '';
+    },
+    deleteTask(index) {
+      this.tasks.splice(index,1);
+      console.log(index);
+    },
+    editTast(index) {
+      this.task = this.tasks[index].name;
+      this.editedTask = index;
+    },
+    changeStatus(index){
+      if(this.tasks[index].status === 'normal') {
+        this.tasks[index].status = 'asap';
+        console.log(this.tasks[index]);
+        // 왜 status가 변경이 안될까?!!
+      } 
     }
+  },
+  computed: {
+    
   }
 }
 </script>
@@ -74,6 +118,9 @@ table {
 h2 {
   margin-top: 80px;
   text-align: center;
+}
+span {
+  cursor: pointer;
 }
 .input-container {
   display: flex;
@@ -113,5 +160,8 @@ table > tbody > tr > td:nth-of-type(4) {
 }
 table > tbody > tr > td:nth-of-type(5) {
   width: 10%;
+}
+.finished {
+  text-decoration: line-through;
 }
 </style>
