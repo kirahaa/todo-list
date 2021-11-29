@@ -3,8 +3,10 @@
     <h2>TodoList</h2>
     <!-- Input -->
     <div class="input-container">
-      <input type="text" v-model="task" placeholder="Enter your task">
-      <button type="submit" @click="submitTask">SUBMIT</button>
+      <form>
+        <input type="text" v-model="task" placeholder="Enter your task">
+        <button type="submit" @click="submitTask">SUBMIT</button>
+      </form>
     </div>
     <!-- Task -->
     <table>
@@ -69,22 +71,25 @@ export default {
   },
   methods: {
     submitTask() {
-      if(this.task.length === 0) alert('할일을 입력해주세요!');
-      if(this.editedTask === null) {
-        this.tasks.push({
-          name: this.task,
-          status: 'normal'
-        })
+      if(!this.task.length) {
+        alert('할일을 입력해주세요!');
       } else {
-        this.tasks[this.editedTask].name = this.task;
-        this.editedTask = null;
+        if(!this.editedTask) {
+          this.tasks.push({
+            name: this.task,
+            status: 'normal'
+          })
+        } else {
+          this.tasks[this.editedTask].name = this.task;
+          this.editedTask = null;
+        }
+        event.preventDefault();
+        this.task = '';
       }
 
-      this.task = '';
     },
     deleteTask(index) {
       this.tasks.splice(index,1);
-      console.log(index);
     },
     editTast(index) {
       this.task = this.tasks[index].name;
@@ -122,24 +127,28 @@ h2 {
 span {
   cursor: pointer;
 }
+form {
+  display: flex;
+  width: 60%;
+}
 .input-container {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 50px 0;
 }
-.input-container > input {
-  width: 50%;
+.input-container > form > input {
+  width: 90%;
   height: 50px;
   border: 1px solid #ccc;
   text-indent: 10px;
   font-size: 18px;
 }
-.input-container > button {
-  padding: 0 20px;
+.input-container > form > button {
   border: none;
+  width: 10%;
   height: 50px;
-  font-size: 18px;
+  font-size: 1vw;
 }
 table > tbody > tr {
   height: 50px;
